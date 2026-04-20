@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "H9a5LyMRs/s=",
+  "dgSpecHash": "0qtQ9+6fmoM=",
   "success": true,
-  "projectFilePath": "C:\\KinalSport\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+  "projectFilePath": "C:\\PruebasEntrega\\Kafetery\\kafetery-auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hogar\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
   ],

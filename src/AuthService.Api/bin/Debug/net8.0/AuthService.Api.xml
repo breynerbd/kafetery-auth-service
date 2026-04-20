@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AuthService.Api</name>
+    </assembly>
+    <members>
+        <member name="M:AuthService.Api.Controllers.AuthController.Register(AuthService.Application.DTOs.Auth.RegisterRequest)">
+            <summary>
+            Registra un nuevo usuario.
+            </summary>
+            <remarks>
+            Este endpoint permite registrar un usuario enviando los datos mediante multipart/form-data.
+            Soporta carga de imagen de perfil.
+            </remarks>
+            <param name="registerDto">Datos del usuario a registrar.</param>
+            <response code="201">Usuario registrado exitosamente.</response>
+            <response code="400">Datos inválidos.</response>
+            <response code="409">El usuario ya existe.</response>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.Login(AuthService.Application.DTOs.Auth.LoginRequest)">
+            <summary>
+            Inicia sesión en el sistema.
+            </summary>
+            <remarks>
+            Permite autenticar a un usuario con sus credenciales.
+            </remarks>
+            <param name="loginDto">Credenciales del usuario.</param>
+            <response code="200">Login exitoso.</response>
+            <response code="401">Credenciales inválidas.</response>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.Me">
+            <summary>
+            Obtiene el perfil del usuario autenticado.
+            </summary>
+            <remarks>
+            Requiere un token JWT válido en el header Authorization.
+            </remarks>
+            <response code="200">Perfil obtenido exitosamente.</response>
+            <response code="401">No autorizado.</response>
+            <response code="404">Usuario no encontrado.</response>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.ForgotPassword(AuthService.Application.DTOs.Email.ForgotPasswordDto)">
+            <summary>
+            Solicita recuperación de contraseña.
+            </summary>
+            <remarks>
+            Siempre devuelve éxito por seguridad, incluso si el usuario no existe.
+            </remarks>
+            <param name="forgotPasswordDto">Correo del usuario.</param>
+            <response code="200">Correo enviado (si aplica).</response>
+            <response code="503">Error al enviar el correo.</response>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.ResetPassword(AuthService.Application.DTOs.Email.ResetPasswordDto)">
+            <summary>
+            Restablece la contraseña del usuario.
+            </summary>
+            <param name="resetPasswordDto">Token y nueva contraseña.</param>
+            <response code="200">Contraseña actualizada correctamente.</response>
+            <response code="400">Token inválido o expirado.</response>
+        </member>
+        <member name="M:AuthService.Api.Controllers.AuthController.ResendVerification(AuthService.Application.DTOs.Email.ResendVerificationDto)">
+            <summary>
+            Reenvía el correo de verificación.
+            </summary>
+            <param name="resendDto">Correo del usuario.</param>
+            <response code="200">Correo reenviado exitosamente.</response>
+            <response code="400">El correo ya está verificado.</response>
+            <response code="404">Usuario no encontrado.</response>
+            <response code="503">Error al enviar el correo.</response>
+        </member>
+    </members>
+</doc>

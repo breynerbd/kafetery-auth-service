@@ -27,18 +27,17 @@ namespace AuthService.Application.Services
                 key,
                 SecurityAlgorithms.HmacSha256
             );
-
+            
             var claims = new List<Claim>
             {
-                new Claim("id", user.Id),
-                new Claim("name", $"{user.Name} {user.Surname}"),
-                new Claim("username", user.Username),
-                new Claim("email", user.Email)
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, $"{user.Name} {user.Surname}"),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
             foreach (var role in roles)
             {
-                claims.Add(new Claim("role", role));
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             var token = new JwtSecurityToken(

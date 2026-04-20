@@ -10,3 +10,15 @@ C:\KinalSport\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.D
 C:\KinalSport\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
 C:\KinalSport\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
 C:\KinalSport\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.sourcelink.json
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+C:\PruebasEntrega\Kafetery\kafetery-auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
