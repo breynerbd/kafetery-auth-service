@@ -10,6 +10,8 @@ using AuthService.Application.DTOs;
 using AuthService.Application.DTOs.Email;
 using AuthService.Application.Interfaces;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Text;
+using System.Text.Json;
 
 namespace AuthService.Api.Controllers;
 
@@ -46,38 +48,76 @@ public class AuthController : ControllerBase
     /// <response code="400">Datos inválidos.</response>
     /// <response code="409">El usuario ya existe.</response>
     [HttpPost("register")]
-public async Task<IActionResult> Register(RegisterRequest request)
-{
-    if (await _userRepository.ExistsByEmailAsync(request.Email))
-        return BadRequest("Email already exists");
-
-
-    var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
-if (existingUser != null)
-{
-    return BadRequest(new { Message = "El nombre de usuario ya está en uso." });
-}
-    var user = new User
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        Id = Guid.NewGuid().ToString("N")[..16],
-        Name = request.Name,
-        Surname = request.Surname,
-        Username = request.Username,
-        Email = request.Email,
-        Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
-        Status = true,
-        CreatedAt = DateTime.UtcNow,
-        UpdatedAt = DateTime.UtcNow
-    };
+        if (await _userRepository.ExistsByEmailAsync(request.Email))
+            return BadRequest("Email already exists");
 
-    await _userRepository.CreateAsync(user);
+        var existingUser = await _userRepository.GetByUsernameAsync(request.Username);
 
-    var userRole = await _roleRepository.GetByNameAsync("USER");
+        if (existingUser != null)
+        {
+            return BadRequest(new
+            {
+                Message = "El nombre de usuario ya está en uso."
+            });
+        }
 
-    await _userRepository.UpdateUserRoleAsync(user.Id, userRole.Id);
+        var user = new User
+        {
+            Id = Guid.NewGuid().ToString("N")[..16],
+            Name = request.Name,
+            Surname = request.Surname,
+            Username = request.Username,
+            Email = request.Email,
+            Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
+            Status = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
 
-    return Ok("User registered successfully");
-}
+        await _userRepository.CreateAsync(user);
+
+        var userRole = await _roleRepository.GetByNameAsync("USER");
+
+        await _userRepository.UpdateUserRoleAsync(user.Id, userRole.Id);
+
+        using var httpClient = new HttpClient();
+
+        var payload = new
+        {
+            auth_id = user.Id,
+            name = user.Name,
+            surname = user.Surname,
+            username = user.Username,
+            email = user.Email,
+            password = request.Password
+        };
+
+        var json = JsonSerializer.Serialize(payload);
+
+        var content = new StringContent(
+            json,
+            Encoding.UTF8,
+            "application/json"
+        );
+
+        await httpClient.PostAsync(
+            "http://localhost:3001/kafetery/v1/internals/sync-user",
+            content
+        );
+
+        return Ok(new
+        {
+            success = true,
+            user = new
+            {
+                id = user.Id,
+                email = user.Email,
+                username = user.Username
+            }
+        });
+    }
 
     /// <summary>
     /// Inicia sesión en el sistema.
