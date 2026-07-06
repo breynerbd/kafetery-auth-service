@@ -141,11 +141,23 @@ public class AuthController : ControllerBase
         var roles = await _userRepository.GetUserRolesAsync(user.Id);
 
         var token = _jwtTokenGenerator.GenerateToken(user, roles);
-
-        return Ok(new { accessToken = token });
+        var refreshToken = _jwtTokenGenerator.GenerateRefreshToken(user);
+        return Ok(new
+        {
+            accessToken = token,
+            refreshToken,
+            user = new
+            {
+                id = user.Id,
+                name = user.Name,
+                surname = user.Surname,
+                email = user.Email,
+                username = user.Username
+            }
+        });
     }
 
-/// <summary>
+    /// <summary>
     /// Obtiene el perfil del usuario autenticado.
     /// </summary>
     /// <remarks>
@@ -155,43 +167,43 @@ public class AuthController : ControllerBase
     /// <response code="401">No autorizado.</response>
     /// <response code="404">Usuario no encontrado.</response>
     [Authorize]
-[HttpGet("me")]
-public async Task<IActionResult> Me()
-{
-    // Obtenemos el Id del usuario desde el token
-    var userId = User.FindFirst("id")?.Value;
-    if (string.IsNullOrEmpty(userId))
-        return Unauthorized();
-
-    // Traemos al usuario con todas sus relaciones necesarias
-    var user = await _userRepository.GetByIdAsync(userId);
-
-    if (user == null)
-        return NotFound("Usuario no encontrado.");
-
-    // Construimos la respuesta
-    var result = new
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
     {
-        user.Id,
-        user.Name,
-        user.Surname,
-        user.Username,
-        user.Email,
-        Status = user.Status,
-        CreatedAt = user.CreatedAt,
-        UpdatedAt = user.UpdatedAt,
-        EmailVerified = user.UserEmail?.EmailVerified ?? false,
-        Profile = user.UserProfile != null ? new
-        {
-            user.UserProfile.ProfilePictureUrl,
-            user.UserProfile.Bio,
-            user.UserProfile.DateOfBirth
-        } : null,
-        Roles = user.UserRoles.Select(r => r.Role.Name).ToList()
-    };
+        // Obtenemos el Id del usuario desde el token
+        var userId = User.FindFirst("id")?.Value;
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
 
-    return Ok(result);
-}
+        // Traemos al usuario con todas sus relaciones necesarias
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+            return NotFound("Usuario no encontrado.");
+
+        // Construimos la respuesta
+        var result = new
+        {
+            user.Id,
+            user.Name,
+            user.Surname,
+            user.Username,
+            user.Email,
+            Status = user.Status,
+            CreatedAt = user.CreatedAt,
+            UpdatedAt = user.UpdatedAt,
+            EmailVerified = user.UserEmail?.EmailVerified ?? false,
+            Profile = user.UserProfile != null ? new
+            {
+                user.UserProfile.ProfilePictureUrl,
+                user.UserProfile.Bio,
+                user.UserProfile.DateOfBirth
+            } : null,
+            Roles = user.UserRoles.Select(r => r.Role.Name).ToList()
+        };
+
+        return Ok(result);
+    }
 
     /// <summary>
     /// Solicita recuperación de contraseña.
@@ -202,7 +214,7 @@ public async Task<IActionResult> Me()
     /// <param name="forgotPasswordDto">Correo del usuario.</param>
     /// <response code="200">Correo enviado (si aplica).</response>
     /// <response code="503">Error al enviar el correo.</response>
-[HttpPost("forgot-password")]
+    [HttpPost("forgot-password")]
     [EnableRateLimiting("AuthPolicy")]
     public async Task<ActionResult<EmailResponseDto>> ForgotPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
     {
@@ -256,5 +268,30 @@ public async Task<IActionResult> Me()
         }
 
         return Ok(result);
+    }
+
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh([FromBody] RefreshRequest request)
+    {
+        var userId = _jwtTokenGenerator.ValidateRefreshToken(request.RefreshToken);
+
+        if (string.IsNullOrEmpty(userId))
+            return Unauthorized();
+
+        var user = await _userRepository.GetByIdAsync(userId);
+
+        if (user == null)
+            return Unauthorized();
+
+        var roles = await _userRepository.GetUserRolesAsync(user.Id);
+
+        var newAccessToken = _jwtTokenGenerator.GenerateToken(user, roles);
+        var newRefreshToken = _jwtTokenGenerator.GenerateRefreshToken(user);
+
+        return Ok(new
+        {
+            accessToken = newAccessToken,
+            refreshToken = newRefreshToken
+        });
     }
 }

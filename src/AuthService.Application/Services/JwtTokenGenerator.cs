@@ -5,6 +5,7 @@ using AuthService.Domain.Entitis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 namespace AuthService.Application.Services
 {
@@ -49,6 +50,27 @@ namespace AuthService.Application.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public string GenerateRefreshToken(User user)
+        {
+            var randomNumber = new byte[64];
+
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+            }
+
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        public string ValidateRefreshToken(string refreshToken)
+        {
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return null;
+
+            return null;
         }
     }
 }
